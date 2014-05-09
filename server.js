@@ -85,14 +85,15 @@ var slot = 0;
         commit.parent = doc.commits.length - 1;
         doc.commits.push(commit);
         doc.state = git.applyDiff(doc.state, commit.diff);
-        doc.listeners.forEach(function(waitingRes) {
+        var listenersIndex = doc.commits.length - 1;
+        var listeners = doc.listeners[listenersIndex] || [];
+        listeners.forEach(function(waitingRes) {
           waitingRes.end(JSON.stringify(commit));
         });
-        doc.listeners = [];
+        delete doc.listeners[listenersIndex];
         pullFromMaster();
       });
     } else {
-      console.log()
       setTimeout(pullFromMaster, errorTimeout);
     }
   }).on("error", function(err) {
@@ -106,7 +107,8 @@ function get(docID, commitID, res) {
   if (commitID < doc.commits.length) {
     res.end(JSON.stringify(doc.commits[commitID]));
   } else {
-    doc.listeners.push(res);
+    doc.listeners[commitID] = doc.listeners[commitID] || [];
+    doc.listeners[commitID].push(res);
   }
 }
 
@@ -139,7 +141,7 @@ function getDoc(docID) {
   if (!(docID in docs)) {
     docs[docID] = {
       commits: [null],
-      listeners: [],
+      listeners: {},
       state: "",
     };
   }

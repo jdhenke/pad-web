@@ -32,10 +32,18 @@ function commitAndPush(newText, parent) {
   // create function to keep trying to commit until successful.
   function sendCommit() {
     var req = new XMLHttpRequest();
-    req.onerror = function() {
+    function error() {
       console.log(this.responseText);
       setTimeout(sendCommit, 1000);
     }
+    function load() {
+      if (this.status !== 200) {
+        console.log("put status", this.status, this.responseText);
+        setTimeout(sendCommit, 1000);
+      }
+    }
+    req.addEventListener("error", error);
+    req.addEventListener("abort", error);
     req.open("put", "/commits/put");
     req.setRequestHeader('doc-id', state.docID);
     req.send(JSON.stringify(commit));
@@ -47,6 +55,11 @@ function commitAndPush(newText, parent) {
 function startContinuousPull() {
 
   function success() {
+    if (this.status !== 200) {
+      console.log("get status", this.status, this.responseText);
+      setTimeout(doPull, 1000);
+      return;
+    }
     var commit = JSON.parse(this.responseText);
     if (commit.parent != state.nextDiff - 1) {
       console.log("bad commit received");
