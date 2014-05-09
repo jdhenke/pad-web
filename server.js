@@ -74,25 +74,30 @@ var slot = 0;
     },
   };
   http.get(options, function(res) {
-    readAll(res, function(data) {
-      slot += 1;
-      var commit = JSON.parse(data);
-      var doc = getDoc(commit.docID);
-      for (var i = commit.parent + 1; i < doc.commits.length; i += 1) {
-        commit.diff = git.rebase(doc.commits[i].diff, commit.diff);
-      }
-      commit.parent = doc.commits.length - 1;
-      doc.commits.push(commit);
-      doc.state = git.applyDiff(doc.state, commit.diff);
-      doc.listeners.forEach(function(waitingRes) {
-        waitingRes.end(JSON.stringify(commit));
+    if (res.statusCode == 200) {
+      readAll(res, function(data) {
+        slot += 1;
+        var commit = JSON.parse(data);
+        var doc = getDoc(commit.docID);
+        for (var i = commit.parent + 1; i < doc.commits.length; i += 1) {
+          commit.diff = git.rebase(doc.commits[i].diff, commit.diff);
+        }
+        commit.parent = doc.commits.length - 1;
+        doc.commits.push(commit);
+        doc.state = git.applyDiff(doc.state, commit.diff);
+        doc.listeners.forEach(function(waitingRes) {
+          waitingRes.end(JSON.stringify(commit));
+        });
+        doc.listeners = [];
+        pullFromMaster();
       });
-      doc.listeners = [];
-      pullFromMaster();
-    });
+    } else {
+      console.log()
+      setTimeout(pullFromMaster, errorTimeout);
+    }
   }).on("error", function(err) {
     console.log(err);
-    setTimeout(pullFromMaster, error);
+    setTimeout(pullFromMaster, errorTimeout);
   });
 })();
 
