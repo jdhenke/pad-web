@@ -1,0 +1,6 @@
+{
+  "devDependencies": {
+    "async": "~0.8.0",
+    "phantomjs": "~1.9.7-5"
+  }
+}
