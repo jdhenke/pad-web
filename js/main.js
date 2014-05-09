@@ -33,7 +33,6 @@ window.addEventListener("load", function() {
     pad.tryCommit();
   });
   window.onblur = function() {
-    console.log("blurring");
     pad.tryCommit();
   };
 
