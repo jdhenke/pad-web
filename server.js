@@ -97,7 +97,7 @@ var slot = 0;
       setTimeout(pullFromMaster, errorTimeout);
     }
   }).on("error", function(err) {
-    console.log(err);
+    console.log("get error", err);
     setTimeout(pullFromMaster, errorTimeout);
   });
 })();
@@ -121,7 +121,7 @@ function put(docID, data) {
   };
   var req = http.request(options);
   req.on("error", function(err) {
-    console.log(err);
+    console.log("put error", err);
     setTimeout(function() {
       put(docID, data)
     }, errorTimeout);
