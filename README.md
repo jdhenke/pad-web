@@ -1,8 +1,8 @@
 ## Pad Web
 
-Modded version of Pad to work on Heroku.
+Modded version of [pad](https://github.com/jdhenke/pad) to work on Heroku.
 
-Be sure to pad-master is running as well.
+Be sure to run [pad-master](https://github.com/jdhenke/pad-master) first, then do the following to run pad-web.
 
 ## Using Locally
 
