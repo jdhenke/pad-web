@@ -1,18 +1,27 @@
-## Pad-Lite
+## Pad Web
 
-A simpler version of Pad.
+Modded version of Pad to work on Heroku.
 
-## Tasks
+Be sure to pad-master is running as well.
 
-- [ ] cleaner config handling by prod/tests
-- [ ] better diff algo
-- [ ] better stress testing of master/client setup
-- [ ] proxy
-
-## Usage
+## Using Locally
 
 ```bash
-./driver configs/local.json
+# to run locally
+foreman start local1,local2
 ```
 
-Go to http://localhost:8080/docs/test or http://localhost:8081/docs/test.
+Now going to [http://localhost:8080](http://localhost:8080) or [http://lcoalhost:8081](http://lcoalhost:8081) will work.
+
+## Using on Heroku
+
+```bash
+# start a single web dyno
+heroku scale web=1:1X
+
+# start 3 x16 power web dynos
+heroku scale web=3:PX
+
+# shut it down to save money
+heroku scale web=0:1X
+```
