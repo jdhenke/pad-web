@@ -55,6 +55,9 @@ http.createServer(function(req, res) {
   } else if (uri.match(/init/)) {
     var docID = req.headers["doc-id"];
     init(docID, res);
+  } else if (uri == "/") {
+    res.writeHead(302, {"Location": "/docs/" + (+ new Date())});
+    res.end("/docs/test");
   } else {
     res.writeHead(404, {"Content-Type": "text/plain"});
     res.write("404 Not Found\n");
